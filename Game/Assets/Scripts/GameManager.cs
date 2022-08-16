@@ -1,128 +1,90 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-
+using System.Collections;
+using TMPro;
 public class GameManager : MonoBehaviour
 {
-    public Image PauseMenu;
+    
+    public static GameManager instance;
 
-    public GameObject gunToBuild;
-    private float health = 100f;
-    public GameObject[] Enemies;
-    public GameObject EnemySpawner;
-    public float gunPrice;
-    private float totalMoney = 99999f;
-    public GameObject placeToBuild;
+    public Transform[] stations;
+    public GameObject[] shops;
+    public GameObject[] enemies;
+    public GameObject enemy;
 
-    public Image gameOverImage;
-    public TMP_Text totalMoneyText;
+    public int maxEnemyNumberPerSpawn;
+    public int minEnemyNumberPerSpawn;
+    public float durationBetweenSpawns;
+    public float frequencyInSpawn;
+    private bool isDone;
+    
+    public float money;
+    public float health;
+    public TMP_Text moneyText;
     public TMP_Text healthText;
 
-    private bool isPaused = false;
-
-    private void Awake()
+    void Awake()
     {
-        gameOverImage.gameObject.SetActive(false);
-        EnemySpawner = GameObject.Find("EnemySpawner");
-        totalMoneyText.text = totalMoney.ToString() + "$";
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else { Destroy(gameObject); }
+        money = 100;
+        health = 5f;
+        minEnemyNumberPerSpawn = 1;
+        maxEnemyNumberPerSpawn = 3;
+        frequencyInSpawn = 1f;
+        isDone = true;
+    }
+
+    void Update()
+    {
+        UpdateMenus();
+        UpdateEnemies();
+        SendEnemies();
+        PrintHealthAndMoney();
+    }
+
+    void UpdateMenus()
+    {
+        shops = GameObject.FindGameObjectsWithTag("Shop");
+    }
+
+    void UpdateEnemies()
+    {
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+    }
+
+    public void TakeDamage()
+    {
+        health -= 1f;
+
+    }
+
+    void PrintHealthAndMoney()
+    {
+        moneyText.text = money.ToString() + "$";
         healthText.text = health.ToString();
     }
 
-    private void Update()
+    void SendEnemies()
     {
-        UpdateEnemies();
-        CheckGameOver();
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (enemies.Length == 0 && isDone)
         {
-            Pause();
-        }
-        
-    }
-
-    private void CheckGameOver()
-    {
-        if (health <= 0)
-        {
-            EnemySpawner.SetActive(false);
-            DestroyAllEnemies();
-            gameOverImage.gameObject.SetActive(true);
-        }
-    }
-    public void buildTheSelectedWeapon()
-    {
-        if (gunToBuild != null && totalMoney >= gunPrice)
-        {
-            totalMoney -= gunPrice;
-            totalMoneyText.text = totalMoney.ToString() + "$";
-            Instantiate(gunToBuild, placeToBuild.transform.position, Quaternion.identity);
+            int quantity = Random.Range(minEnemyNumberPerSpawn, maxEnemyNumberPerSpawn);
+            StartCoroutine(SendEnemyWave(quantity));
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    IEnumerator SendEnemyWave(int quantity)
     {
-        if (other.CompareTag("Enemy"))
+        isDone = false;
+        for (int i = 0; i < quantity; i++)
         {
-            health -= 10;
-            healthText.text = health.ToString();
-            Destroy(other.gameObject);
+            Instantiate(enemy, transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(0.5f);
         }
+        isDone = true;
     }
 
-    private void DestroyAllEnemies()
-    {
-        for (int i = 0; i < Enemies.Length; i++)
-        {
-            Destroy(Enemies[i]);
-        }
-    }
-
-    public void upgradeWeapon(GameObject weaponToUpgrade)
-    {
-        GunControl gunControl = weaponToUpgrade.GetComponent<GunControl>();
-        gunControl.range += 10f;
-    }
-
-    public void sellWeapon(GameObject weaponToSell)
-    {
-        if (weaponToSell.CompareTag("MachineGun"))
-        {
-            totalMoney += 50f;
-            Destroy(weaponToSell);
-        }
-    }
-
-    public void RestartButton()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    private void UpdateEnemies()
-    {
-        Enemies = GameObject.FindGameObjectsWithTag("Enemy");
-    }
-
-    public void Pause()
-    {
-        UpdateEnemies();
-        if (!isPaused)
-        {
-            for (int i = 0; i < Enemies.Length; i++) { Enemies[i].GetComponent<Enemy>().isPaused = true; }
-            PauseMenu.gameObject.SetActive(true);
-            isPaused = true;
-            EnemySpawner.GetComponent<EnemySpawner>().isPaused = true;
-        }
-        else
-        {
-            for (int i = 0; i < Enemies.Length; i++) { Enemies[i].GetComponent<Enemy>().isPaused = false; }
-            PauseMenu.gameObject.SetActive(false);
-            isPaused = false;
-            EnemySpawner.GetComponent<EnemySpawner>().isPaused = false;
-        }
-    }
-
-    public void BackToMenu()
-    {
-        SceneManager.LoadScene(0);
-    }
 }

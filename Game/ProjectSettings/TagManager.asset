@@ -4,10 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Shop
+  - WeaponMenu
   - Enemy
-  - Dest
-  - MachineGun
-  - RocketLauncher
   layers:
   - Default
   - TransparentFX

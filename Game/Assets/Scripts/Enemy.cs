@@ -1,54 +1,61 @@
-using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine;
+
 public class Enemy : MonoBehaviour
 {
-    public float health;
-    public Slider slider;
-    public float damage;
     public float speed;
-    private int currentTargetInd;
+    public float health;
+    public float deadEnemyValue;
+    private int stationInd;
+    public int finalStationInd;
+    public Transform currentStation;
+    public Slider healthSlider;
+    void Start()
+    {
+        health = 100f;
+        stationInd = 0;
+        finalStationInd = GameManager.instance.stations.Length;
+        currentStation = GameManager.instance.stations[stationInd];
 
-    public bool isPaused = false;
+    }
 
+    // Update is called once per frame
     void Update()
     {
-        slider.value = health / 100;
-        if (!isPaused)
-        {
-            if (currentTargetInd < Destinations.destinations.Length - 1)
-            {
-                IsArrived();
-            }
-            else { Destroy(gameObject, 1f); }
-            Walk();
-        }
+        IsArrived();
+        GoToCurrentStation();
     }
 
-    public void TakeDamage(float damage)
+    void IsArrived()
+    {
+        
+        if ((currentStation.position - transform.position).magnitude < 0.2f)
+        {
+            stationInd = (stationInd + 1);
+            if (stationInd == finalStationInd)
+            {
+                GameManager.instance.TakeDamage();
+                Destroy(gameObject);
+                return;
+            }
+            currentStation = GameManager.instance.stations[stationInd];
+        }
+    }
+    void GoToCurrentStation()
+    {
+        transform.LookAt(currentStation.position);
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+    }
+
+    public void TakeDamage(int damage)
     {
         health -= damage;
-        
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-
-    private void IsArrived()
-    {
-        if ((transform.position - Destinations.destinations[currentTargetInd].transform.position).magnitude <= 0.1f)
-        {
-            
-            currentTargetInd += 1;
-      
-        }
-    }
-
-    private void Walk()
-    {
-        Vector3 dir = (Destinations.destinations[currentTargetInd].transform.position - transform.position).normalized; 
-        dir = dir * speed * Time.deltaTime;
-        transform.Translate(dir);
+        if (health <= 0) 
+        { 
+            Destroy(gameObject); 
+            health = 0f;
+            GameManager.instance.money += deadEnemyValue;
+            return; }
+        healthSlider.value = health / 100f;
     }
 }
