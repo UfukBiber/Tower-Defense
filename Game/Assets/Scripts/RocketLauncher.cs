@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MachineGun : MonoBehaviour
+public class RocketLauncher : MonoBehaviour
 {
     public Transform enemyToFire;
     public Transform barrelContainer;
@@ -56,6 +56,10 @@ public class MachineGun : MonoBehaviour
         else { StopParticles(); }
     }
 
+    void Aim()
+    {
+
+    }
     void StartParticleSystems()
     {
         for (int i = 0; i < barrels.Length; i++)

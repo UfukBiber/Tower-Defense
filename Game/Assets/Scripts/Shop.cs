@@ -58,7 +58,6 @@ public class Shop : MonoBehaviour
     {
         if (GameManager.instance.money >= machineGunUpgradePrice)
         {
-            Debug.Log("UpgradeWeapon");
             GameManager.instance.money -= machineGunUpgradePrice;
             floor.currentWeapon.GetComponent<MachineGun>().Upgrade();
             Destroy(gameObject);
@@ -67,7 +66,6 @@ public class Shop : MonoBehaviour
 
     public void SellWeapon()
     {
-        Debug.Log("SellWeapon");
         GameManager.instance.money += weaponSalePrice;
         floor.SellWeapon();
         Destroy(gameObject);

@@ -6,7 +6,9 @@ public class GameManager : MonoBehaviour
     
     public static GameManager instance;
 
-    public Transform[] stations;
+    public Transform[] enemyRoute1;
+    public Transform[] enemyRoute2;
+    private int route; // if 0 route1 is selected; if 1 route2 is selected;
     public GameObject[] shops;
     public GameObject[] enemies;
     public GameObject enemy;
@@ -73,6 +75,8 @@ public class GameManager : MonoBehaviour
         {
             int quantity = Random.Range(minEnemyNumberPerSpawn, maxEnemyNumberPerSpawn);
             StartCoroutine(SendEnemyWave(quantity));
+            minEnemyNumberPerSpawn += 1;
+            maxEnemyNumberPerSpawn += 1;
         }
     }
 
@@ -81,7 +85,18 @@ public class GameManager : MonoBehaviour
         isDone = false;
         for (int i = 0; i < quantity; i++)
         {
-            Instantiate(enemy, transform.position, Quaternion.identity);
+            route = Random.Range(0, 2);
+            GameObject enemyClone;
+            if (route == 1)
+            {
+                enemyClone = Instantiate(enemy, enemyRoute1[0].position, Quaternion.identity);
+                enemyClone.GetComponent<Enemy>().route = true;
+            }
+            else if (route == 0)
+            {
+                enemyClone = Instantiate(enemy, enemyRoute2[0].position, Quaternion.identity);
+                enemyClone.GetComponent<Enemy>().route = false;
+            }
             yield return new WaitForSeconds(0.5f);
         }
         isDone = true;

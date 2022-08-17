@@ -10009,7 +10009,7 @@ MonoBehaviour:
   enemyToFire: {fileID: 0}
   barrelContainer: {fileID: 4478555726688213922}
   range: 5
-  fireRate: 0.3
+  fireRate: 0.25
   nextTimeToFire: 0
   weaponDamage: 10
   barrel_1: {fileID: 2670218828260552803}
