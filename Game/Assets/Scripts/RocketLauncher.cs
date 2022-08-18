@@ -8,6 +8,8 @@ public class RocketLauncher : MonoBehaviour
     public float fireRate;
     public float nextTimeToFire;
     public int weaponDamage;
+    public float rocketSpeed;
+    private float gravity = -9.81f;
     public ParticleSystem[] barrels;
     void Start()
     {
@@ -58,7 +60,7 @@ public class RocketLauncher : MonoBehaviour
 
     void Aim()
     {
-
+        
     }
     void StartParticleSystems()
     {

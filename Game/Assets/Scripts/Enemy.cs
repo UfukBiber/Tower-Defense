@@ -4,7 +4,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float speed;
-    public bool route;
+    public int route;
     public float health;
     public float deadEnemyValue;
     private int stationInd;
@@ -15,15 +15,20 @@ public class Enemy : MonoBehaviour
     {
         health = 100f;
         stationInd = 1;
-        if (route)
+        if (route == 0)
         {
             finalStationInd = GameManager.instance.enemyRoute1.Length;
             currentStation = GameManager.instance.enemyRoute1[stationInd];
         }
-        else
+        else if (route == 1)
         {
             finalStationInd = GameManager.instance.enemyRoute2.Length;
             currentStation = GameManager.instance.enemyRoute2[stationInd];
+        }
+        else if (route == 2)
+        {
+            finalStationInd = GameManager.instance.enemyRoute3.Length;
+            currentStation = GameManager.instance.enemyRoute3[stationInd];
         }
 
     }
@@ -46,13 +51,18 @@ public class Enemy : MonoBehaviour
                 Destroy(gameObject);
                 return;
             }
-            if (route)
+            if (route == 0)
             {
                 currentStation = GameManager.instance.enemyRoute1[stationInd];
             }
-            else
+            else if (route == 1)
             {
                 currentStation = GameManager.instance.enemyRoute2[stationInd];
+            }
+            else if (route == 2)
+            {
+                currentStation = GameManager.instance.enemyRoute3[stationInd];
+
             }
         }
     }
