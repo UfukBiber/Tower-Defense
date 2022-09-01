@@ -8,6 +8,9 @@ TagManager:
   - WeaponMenu
   - Enemy
   - MachineGun
+  - DeadEnemy
+  - BuiltablePlane
+  - WalkPlane
   layers:
   - Default
   - TransparentFX

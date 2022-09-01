@@ -10,18 +10,25 @@ public class GameManager : MonoBehaviour
     public Transform[] enemyRoute1;
     public Transform[] enemyRoute2;
     public Transform[] enemyRoute3;
-    private int route; // if 0 route1 is selected; if 1 route2 is selected;
-    public GameObject[] shops;
+    public Transform[] enemyRoute4;
+    private int route;
+
+    public GameObject machineGun;
+    public GameObject rocketLauncher;
+
     public GameObject[] enemies;
     public GameObject[] machineGuns;
     public GameObject enemy;
+
+    public bool machineGunSelected;
+    public bool rocketLauncherSelected;
 
     public int maxEnemyNumberPerSpawn;
     public int minEnemyNumberPerSpawn;
     public float durationBetweenSpawns;
     public float frequencyInSpawn;
     private bool isDone;
-    
+
     public float money;
     public float health;
     public TMP_Text moneyText;
@@ -36,26 +43,23 @@ public class GameManager : MonoBehaviour
         }
         else { Destroy(gameObject); }
         money = 100;
-        health = 5f;
+        health = 50f;
         minEnemyNumberPerSpawn = 1;
         maxEnemyNumberPerSpawn = 3;
         frequencyInSpawn = 1f;
         isDone = true;
+        machineGunSelected = false;
+        rocketLauncherSelected = false;
     }
 
     void Update()
     {
-        UpdateMenus();
         UpdateEnemies();
         UpdateWeapons();
         SendEnemies();
         PrintHealthAndMoney();
     }
 
-    void UpdateMenus()
-    {
-        shops = GameObject.FindGameObjectsWithTag("Shop");
-    }
 
     void UpdateEnemies()
     {
@@ -111,6 +115,11 @@ public class GameManager : MonoBehaviour
                 enemyClone = Instantiate(enemy, enemyRoute3[0].position, Quaternion.identity);
                 enemyClone.GetComponent<Enemy>().route = 2;
             }
+            else if (route == 3)
+            {
+                enemyClone = Instantiate(enemy, enemyRoute4[0].position, Quaternion.identity);
+                enemyClone.GetComponent<Enemy>().route = 3;
+            }
             yield return new WaitForSeconds(0.5f);
         }
         isDone = true;
@@ -146,5 +155,18 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void MachineGunButton()
+    {
+        rocketLauncherSelected = false;
+        machineGunSelected = true;
+    }
+
+    public void RocketLauncherButton()
+    {
+        machineGunSelected = false;
+        rocketLauncherSelected = true;
+    }
+   
 
 }

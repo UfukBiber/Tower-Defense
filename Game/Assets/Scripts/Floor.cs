@@ -1,73 +1,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Floor : MonoBehaviour
 {
-    public Color highlightColor;
-    public Color occupiedColor;
-    public Color originalColor;
-    public GameObject Shop;
-    public GameObject selfShop;
-    public GameObject currentWeapon;
-    public bool isSelected;
-    
+    public Material highlightColor;
+    public Material occupiedColor;
+    public Material originalColor;
 
+    public Button button;
+
+    private GameObject currentWeapon;
+    
     public bool isOccupied;
 
+    public float machineGunPrice;
+    public float rocketLauncherPrice;
+   
     public MeshRenderer meshRenderer;
     void Start()
     {
-        isSelected = false;
         isOccupied = false;
         meshRenderer = GetComponent<MeshRenderer>();
-        highlightColor = Color.white;
-        originalColor = Color.green;
-        occupiedColor = Color.red;
-        meshRenderer.material.color = originalColor;
+        meshRenderer.material = originalColor;
     }
 
     private void OnMouseEnter()
     {
-        if (!isSelected || !isOccupied)
+        if (isOccupied) { return; }
+        else
         {
-            meshRenderer.material.color = highlightColor;
-        }
-    }
-    private void OnMouseExit()
-    {
-        if (!isSelected || !isOccupied)
-        {
-            meshRenderer.material.color = originalColor;
-        }
-        if (selfShop != null)
-        {
-            selfShop.GetComponent<Shop>().opened = true;
+            if (GameManager.instance.machineGunSelected)
+            {
+                currentWeapon = Instantiate(GameManager.instance.machineGun, transform.position, Quaternion.identity);
+                meshRenderer.material = highlightColor;
+            }
+            else if (GameManager.instance.rocketLauncherSelected)
+            {
+                currentWeapon = Instantiate(GameManager.instance.rocketLauncher, transform.position, Quaternion.identity);
+                meshRenderer.material = highlightColor;
+            }
         }
     }
 
     private void OnMouseDown()
     {
-        if (selfShop != null) { Destroy(selfShop); isSelected = false; }
-        else
+        if (GameManager.instance.machineGunSelected)
         {
-            selfShop = Instantiate(Shop, transform.position, Quaternion.identity);
-            selfShop.GetComponent<Shop>().parentFloor = transform;
-            isSelected = true;
+            isOccupied = true;
+            meshRenderer.material = occupiedColor;
+            GameManager.instance.money -= machineGunPrice;
+            GameManager.instance.machineGunSelected = false;
         }
-        
+        else if (GameManager.instance.rocketLauncherSelected)
+        {
+            isOccupied = true;
+            meshRenderer.material = occupiedColor;
+            GameManager.instance.money -= rocketLauncherPrice;
+            GameManager.instance.rocketLauncherSelected = false;
+        }
     }
-
-    public void Occupy()
-    { 
-        isOccupied = true;
-        meshRenderer.material.color = occupiedColor;
+    private void OnMouseExit()
+    {
+        if (!isOccupied) { Destroy(currentWeapon); meshRenderer.material = originalColor; }
     }
 
     public void SellWeapon()
     {
         isOccupied = false;
-        meshRenderer.material.color = originalColor;
+        meshRenderer.material = originalColor;
         Destroy(currentWeapon);
     }
 }

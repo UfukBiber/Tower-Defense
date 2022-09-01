@@ -1,5 +1,6 @@
 using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class Enemy : MonoBehaviour
     public int finalStationInd;
     public Transform currentStation;
     public Slider healthSlider;
+
+    public Material original;
+    public Material damage;
+    
     void Start()
     {
         health = 100f;
@@ -30,7 +35,12 @@ public class Enemy : MonoBehaviour
             finalStationInd = GameManager.instance.enemyRoute3.Length;
             currentStation = GameManager.instance.enemyRoute3[stationInd];
         }
-
+        else if (route == 3)
+        {
+            finalStationInd = GameManager.instance.enemyRoute4.Length;
+            currentStation = GameManager.instance.enemyRoute4[stationInd];
+        }
+        
     }
 
     // Update is called once per frame
@@ -62,7 +72,10 @@ public class Enemy : MonoBehaviour
             else if (route == 2)
             {
                 currentStation = GameManager.instance.enemyRoute3[stationInd];
-
+            }
+            else if (route == 3)
+            {
+                currentStation = GameManager.instance.enemyRoute4[stationInd];
             }
         }
     }
@@ -75,12 +88,23 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
-        if (health <= 0) 
-        { 
-            Destroy(gameObject); 
+        StartCoroutine(changeColor());
+        if (health <= 0)
+        {
+            gameObject.tag = "DeadEnemy";
+            speed = 0f;
+            Destroy(gameObject, 0.05f);
             health = 0f;
             GameManager.instance.money += deadEnemyValue;
-            return; }
+        }
         healthSlider.value = health / 100f;
+    }
+
+    IEnumerator changeColor()
+    {
+        Renderer renderer = GetComponentInChildren<Renderer>();
+        renderer.material = damage;
+        yield return new WaitForSeconds(1f);
+        renderer.material = original;
     }
 }
