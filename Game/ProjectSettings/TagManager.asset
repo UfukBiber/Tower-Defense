@@ -4,13 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Shop
   - WeaponMenu
   - Enemy
   - MachineGun
   - DeadEnemy
   - BuiltablePlane
   - WalkPlane
+  - RocketLauncher
   layers:
   - Default
   - TransparentFX

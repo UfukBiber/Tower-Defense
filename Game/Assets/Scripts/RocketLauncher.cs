@@ -26,6 +26,10 @@ public class RocketLauncher : MonoBehaviour
     public float reloadTime;
 
 
+    public int sellPrice;
+    public int buyPrice;
+
+
     private void Update()
     {
         DetectEnemy();
@@ -70,6 +74,7 @@ public class RocketLauncher : MonoBehaviour
         {
             currentBullet = Instantiate(bullet, rocketExitPoints[currentExitPoint].position, rocketExitPoints[currentExitPoint].rotation);
             currentBullet.GetComponent<Rocket>().enemyToFire = enemyToFire;
+            
             currentExitPoint = (currentExitPoint + 1) % rocketExitPoints.Length;
             nextTimeToShoot = Time.time + fireRate;
             if (currentExitPoint == rocketExitPoints.Length -1)
@@ -79,6 +84,13 @@ public class RocketLauncher : MonoBehaviour
         }
 
     }
+
+    public void Upgrade()
+    {
+        currentBullet.GetComponent<Rocket>().damage += 5;
+        range += 10f;
+    }
+
 
     void DetectEnemy()
     {

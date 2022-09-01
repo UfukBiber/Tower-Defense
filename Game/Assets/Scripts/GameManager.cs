@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviour
     public TMP_Text healthText;
     public GameObject gameOverObject;
 
+    public GameObject weaponMenu;
+    public Floor selectedFloor;
+
     void Awake()
     {
         if (instance == null)
@@ -50,6 +53,7 @@ public class GameManager : MonoBehaviour
         isDone = true;
         machineGunSelected = false;
         rocketLauncherSelected = false;
+        weaponMenu.SetActive(false);
     }
 
     void Update()
@@ -166,6 +170,17 @@ public class GameManager : MonoBehaviour
     {
         machineGunSelected = false;
         rocketLauncherSelected = true;
+    }
+
+    public void UpgradeWeapon()
+    {
+        selectedFloor.UpdateWeapon();
+        weaponMenu.SetActive(false);
+    }
+    public void SellWeapon()
+    {
+        selectedFloor.SellWeapon();
+        weaponMenu.SetActive(false);
     }
    
 

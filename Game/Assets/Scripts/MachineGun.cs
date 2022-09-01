@@ -15,6 +15,7 @@ public class MachineGun : MonoBehaviour
     public float fireRate;
     public float nextTimeToFire;
     public int weaponDamage;
+    public int sellPrice;
 
 
     private void Start()
@@ -77,11 +78,14 @@ public class MachineGun : MonoBehaviour
             nextTimeToFire = Time.time + fireRate;
         }
     }
+
     public void Upgrade()
     {
         range += 1f;
         weaponDamage += 5;
     }
+
+ 
 
     void StartParticles()
     {

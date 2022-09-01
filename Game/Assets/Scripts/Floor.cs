@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 public class Floor : MonoBehaviour
 {
     public Material highlightColor;
     public Material occupiedColor;
     public Material originalColor;
 
-    public Button button;
+
 
     private GameObject currentWeapon;
     
@@ -16,6 +14,7 @@ public class Floor : MonoBehaviour
 
     public float machineGunPrice;
     public float rocketLauncherPrice;
+
    
     public MeshRenderer meshRenderer;
     void Start()
@@ -45,19 +44,27 @@ public class Floor : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (GameManager.instance.machineGunSelected)
+        if (!isOccupied)
         {
-            isOccupied = true;
-            meshRenderer.material = occupiedColor;
-            GameManager.instance.money -= machineGunPrice;
-            GameManager.instance.machineGunSelected = false;
+            if (GameManager.instance.machineGunSelected)
+            {
+                isOccupied = true;
+                meshRenderer.material = occupiedColor;
+                GameManager.instance.money -= machineGunPrice;
+                GameManager.instance.machineGunSelected = false;
+            }
+            else if (GameManager.instance.rocketLauncherSelected)
+            {
+                isOccupied = true;
+                meshRenderer.material = occupiedColor;
+                GameManager.instance.money -= rocketLauncherPrice;
+                GameManager.instance.rocketLauncherSelected = false;
+            }
         }
-        else if (GameManager.instance.rocketLauncherSelected)
+        else
         {
-            isOccupied = true;
-            meshRenderer.material = occupiedColor;
-            GameManager.instance.money -= rocketLauncherPrice;
-            GameManager.instance.rocketLauncherSelected = false;
+            GameManager.instance.weaponMenu.SetActive(true);
+            GameManager.instance.selectedFloor = this;
         }
     }
     private void OnMouseExit()
@@ -65,10 +72,24 @@ public class Floor : MonoBehaviour
         if (!isOccupied) { Destroy(currentWeapon); meshRenderer.material = originalColor; }
     }
 
+    public void UpdateWeapon()
+    {
+        if (currentWeapon.CompareTag("MachineGun"))
+        {
+            currentWeapon.GetComponent<MachineGun>().Upgrade();
+           
+        }
+        else
+        {
+            currentWeapon.GetComponent<RocketLauncher>().Upgrade();
+        }
+    }
     public void SellWeapon()
     {
         isOccupied = false;
         meshRenderer.material = originalColor;
         Destroy(currentWeapon);
+        currentWeapon = null;
+        GameManager.instance.money += 10f;
     }
 }
