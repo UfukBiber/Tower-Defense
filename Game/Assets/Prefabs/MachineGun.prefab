@@ -52,10 +52,11 @@ MonoBehaviour:
   barrel1: {fileID: 4753666288445704970}
   barrel2: {fileID: 4753666288491959923}
   rotationSpeed: 100
-  range: 30
+  range: 10
   fireRate: 0.1
   nextTimeToFire: 0
   weaponDamage: 5
+  sellPrice: 0
 --- !u!1 &400982035361350061
 GameObject:
   m_ObjectHideFlags: 0
